@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>{% block title %}Welcome{% endblock %}</title>
+
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
+
+  </script>
+  <head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+  <script>
+
+$(document).ready(function(){     
+i=0;
+var str="";
+var d1;
+var word="wolfram";
+var EmailId= "{{ userinfo.email|default:user.username }}@gmail.com";
+    
+    function loadData(){
+
+       $.ajax({
+                type: "POST",
+                url: encodeURI("https://api.parse.com/1/classes/Trials"),
+                headers: {"X-Parse-Application-Id": "zS0O9m5PNEVYpIQ8nQ6WEDFKXXb9Dx68mm9csKiy",
+                          "X-Parse-REST-API-Key": "yyf2oF9sbrhEXgja20PXFEI6RHaJ46Aqlr1JyMMT",
+                          "Content-Type": "application/json"
+                         },
+                data: JSON.stringify({"EmailId": EmailId,"word":word, "time_taken": str }),
+                success: function( ){
+                  console.log("done");
+                    
+                }
+                  
+            }).fail(function(){
+                console.log("couldn't send request");
+            });
+
+
+    }
+
+    $("#submit").click(function(e){ 
+      var text = $("#textfield").val();
+      $("#textfield").val("");
+      i=0;
+        if(text===word){
+          
+          loadData();
+        }
+        else
+          alert("the word entrered is incorrect.")
+       
+        str="";
+      });
+
+    $("input").keypress(function(event){
+      
+      if ( event.which == 13 ) {
+        console.log("enter");
+        var txt = $("#textfield").val();
+        $("#textfield").val("");
+          i=-1;
+        if(txt===word){
+          
+          loadData();
+        }
+        else
+          alert("the word entrered is incorrect.")
+       
+        str="";
+      } 
+    $("span").text(i+=1);
+    });
+      //var d1=new Date();
+    $("input").keyup(function(event){
+      var t = $("#textfield").val();
+      console.log(t);
+      var d2=new Date();
+      if(i>1){
+      var diff=Math.abs(d2-d1);
+      //console.log(diff);
+      //console.log(d1);
+      str=str+" "+diff;
+      console.log(str);}
+      d1=d2;
+      
+      if(word.indexOf(t)!=0){
+              alert("wrong");
+              $("#textfield").val("");
+              str="";
+              i=0;
+              }
+
+      if (  event.which ==8 || event.which==46) {
+        //console.log("enter");
+        $("#textfield").val("");
+        str="";
+        i=0;
+        }
+
+      });
+
+     
+  });
+
+</script>
+   
+ </head>
+ <body onload="onload();">
+ <p>  {% block main %}{% endblock %}
+ 
+  <!--<button type="button" class="btn btn-default"> Submit</button>-->
+  
+   
+ </body>
+</html>
